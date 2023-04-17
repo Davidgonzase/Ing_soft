@@ -1,5 +1,8 @@
 package Display;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Frame;
+
 import javax.swing.*;
 import Managers.Manager;
 
@@ -25,7 +28,11 @@ public class Display{
             frame.getContentPane().removeAll();
             frame.setContentPane(panel);
             SwingUtilities.updateComponentTreeUI(frame);
-        }else frame.setContentPane(panel);
+            frame.pack();
+        }else{
+            frame.setContentPane(panel);
+            frame.pack();
+        }
     }
     public void chgFrame(Dimension dimension,Boolean setresize){
         if(dimension!=null){
@@ -41,5 +48,8 @@ public class Display{
     public void setManager(Managerslist type){
         this.type=type;
         manager=Managerslist.managerselect(type,this);
+    }
+    public Container getCP(){
+        return frame.getContentPane();
     }
 }

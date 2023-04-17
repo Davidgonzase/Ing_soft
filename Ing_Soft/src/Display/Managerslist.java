@@ -5,6 +5,7 @@ import Managers.Registermanager;
 
 public enum Managerslist{
     LOGIN,REGISTER,PERFIL,SEARCH,NFT    ;
+    private static Manager[] manager=new Manager[7];
     public static Manager managerselect(Managerslist type,Display display){
         Manager manager;
         switch(type){

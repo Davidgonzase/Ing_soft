@@ -6,14 +6,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import java.sql.Statement;
 
 class Server{
     private Socket currenSocket;
     private DataInputStream in;
     private DataOutputStream out;
     private  Connection con=null;
-    private Socket[] sockets=new Socket[10];
+    private Socket[] sockets=new Socket[100];
     public Server(){
         System.out.println("Starting Server...");
         setconnection("jdbc:mysql://localhost:3306/ingsoft","Ing_s", "Ing_s");
@@ -27,7 +30,7 @@ class Server{
                 boolean Disponible=false;
                 in=new DataInputStream(currenSocket.getInputStream());
                 out=new DataOutputStream(currenSocket.getOutputStream());
-                for(int i=0;i<5;i++){
+                for(int i=0;i<sockets.length;i++){
                     if(sockets[i]==null)Disponible=true;
                     if(sockets[i]==currenSocket)request();
                 }
@@ -49,6 +52,7 @@ class Server{
             input=in.readInt();
             System.out.println(input);
             switch (input){
+                //Conexion al servidor
                 case 0:
                 int free=-1;
                 boolean notin=true,ft=true;
@@ -79,7 +83,26 @@ class Server{
                 }
                 break;
                 case 2:
-                
+                String email;
+                String password; 
+                email=in.readUTF();
+                password=in.readUTF();
+                String query = "Select Password from user where Email = '"+email+"';";
+                try (Statement stmt = con.createStatement()) {
+                    ResultSet rs = stmt.executeQuery(query);
+                    String p ="";
+                    while (rs.next()) {
+                        p=rs.getString("Password");
+                    }
+                    if(p.equals(password)){
+                        out.writeInt(2);
+                    }else{
+                        out.writeInt(3);
+                    }
+                } catch (SQLException e) {
+                    System.err.println("Error "+e.getSQLState());
+                    out.writeInt(3);
+                }
                 break;
                 case 3:
 
