@@ -1,12 +1,10 @@
 package Managers;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.JButton;
 
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import javax.swing.*;
 
 import Display.Display;
@@ -15,118 +13,149 @@ import UserApp.App;
 
 
 public class Loginmanager extends Manager{
-   private final Dimension dimension=new Dimension(300,520);
-   private javax.swing.JButton createaccountButton;
-   private javax.swing.JPasswordField inputpassword;
-   private javax.swing.JTextField inputusername;
-   private javax.swing.JButton LoginButton;
-   private javax.swing.JLabel PasswordLabel;
+    private final Dimension dimension=new Dimension(300,520);
+    private javax.swing.JButton createaccountButton;
+    private javax.swing.JPasswordField inputpassword;
+    private javax.swing.JTextField inputusername;
+    private javax.swing.JButton LoginButton;
+    private javax.swing.JLabel PasswordLabel;
     private javax.swing.JLabel Usernamelabel;
-   private JLabel Logo;
-   public Loginmanager(Display display){
-      super(display);
-   }
-   @Override
-   public void initialize() {
-      
-      Logo = new javax.swing.JLabel();
-      inputusername = new javax.swing.JTextField();
-      inputpassword = new javax.swing.JPasswordField();
-      PasswordLabel = new javax.swing.JLabel();
-      Usernamelabel = new javax.swing.JLabel();
-      LoginButton = new javax.swing.JButton();
-      createaccountButton = new javax.swing.JButton();
+    private JLabel errorLabel;
+    private JLabel Logo;
+    public Loginmanager(Display display){
+        super(display);
+    }
+    @Override
+    public void initialize() {
 
-      Logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo-Pepsi.png"))); // NOI18N
+        Logo = new javax.swing.JLabel();
+        inputusername = new javax.swing.JTextField();
+        inputpassword = new javax.swing.JPasswordField();
+        PasswordLabel = new javax.swing.JLabel();
+        Usernamelabel = new javax.swing.JLabel();
+        LoginButton = new javax.swing.JButton();
+        createaccountButton = new javax.swing.JButton();
+        errorLabel=new JLabel();
 
-      inputusername.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-      inputusername.setForeground(new java.awt.Color(153, 153, 153));
-      inputusername.setText("Usuario");
-      inputpassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-      inputpassword.setForeground(new java.awt.Color(153, 153, 153));
-      inputpassword.setText("Contraseña");
-      inputpassword.addActionListener(this);
+        Logo.setIcon(new ImageIcon("C:\\Users\\Carlos\\Desktop\\IGENIERÍA DE SOFTWARE\\probandoIngsoft\\img\\logo-Pepsi.png")); // NOI18N
 
-      PasswordLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-      PasswordLabel.setText("Contraseña");
+        inputusername.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        inputusername.setForeground(new java.awt.Color(153, 153, 153));
+        inputusername.setText("Usuario");
+        inputpassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        inputpassword.setForeground(new java.awt.Color(153, 153, 153));
+        inputpassword.setText("Contraseña");
+        inputpassword.addActionListener(this);
 
-      Usernamelabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-      Usernamelabel.setText("Usuario");
+        ponerTextFieldBonito(inputusername,"Usuario");
+        ponerTextFieldBonito(inputpassword,"Contraseña");
 
-      LoginButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-      LoginButton.setText("Entrar");
-      LoginButton.addActionListener(this);
+        PasswordLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        PasswordLabel.setText("Contraseña");
 
-      createaccountButton.setForeground(new java.awt.Color(51, 204, 255));
-      createaccountButton.setText("Crear cuenta");
-      createaccountButton.addActionListener(this);
-      createaccountButton.setBorderPainted(false);
-      javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
-      panel.setLayout(new GridBagLayout());
+        Usernamelabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Usernamelabel.setText("Usuario");
 
-      GridBagConstraints c = new GridBagConstraints();
-      c.gridx = 0;
-      c.gridy = 0;
-      c.anchor = GridBagConstraints.CENTER;
-      c.insets = new Insets(10, 10, 10, 10);
+        LoginButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        LoginButton.setText("Entrar");
+        LoginButton.addActionListener(this);
 
-      panel.add(Logo, c);
+        errorLabel.setForeground(new Color(197,40,45));
+        errorLabel.setText("Usuario o contraseña incorrectos");
 
-      c.gridx = 0;
-      c.gridy = 1;
-      c.fill = GridBagConstraints.HORIZONTAL;
-      panel.add(Usernamelabel, c);
+        createaccountButton.setForeground(new java.awt.Color(51, 204, 255));
+        createaccountButton.setText("Crear cuenta");
+        createaccountButton.addActionListener(this);
+        createaccountButton.setBorderPainted(false);
+        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+        panel.setLayout(new GridBagLayout());
 
-      c.gridx = 0;
-      c.gridy = 2;
-      panel.add(inputusername, c);
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(10, 10, 10, 10);
 
-      c.gridx = 0;
-      c.gridy = 3;
-      panel.add(PasswordLabel, c);
+        panel.add(Logo, c);
 
-      c.gridx = 0;
-      c.gridy = 4;
-      panel.add(inputpassword, c);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(Usernamelabel, c);
 
-      c.gridx = 0;
-      c.gridy = 5;
-      panel.add(createaccountButton, c);
+        c.gridx = 0;
+        c.gridy = 2;
+        panel.add(inputusername, c);
 
-      c.gridx = 0;
-      c.gridy = 6;
-      panel.add(LoginButton, c);
+        c.gridx = 0;
+        c.gridy = 3;
+        panel.add(PasswordLabel, c);
+
+        c.gridx = 0;
+        c.gridy = 4;
+        panel.add(inputpassword, c);
+
+        c.gridx = 0;
+        c.gridy = 5;
+        panel.add(createaccountButton, c);
+
+        c.gridx = 0;
+        c.gridy = 6;
+        panel.add(LoginButton, c);
+
+        c.gridx = 0;
+        c.gridy = 7;
+        panel.add(errorLabel, c);
+        errorLabel.setVisible(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(display.getCP());
         display.getCP().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-      display.clean(panel);
-      display.chgFrame(new Dimension(300, 600), false);
-   }
-   @Override
-   public void actionPerformed(ActionEvent e){
-      if(e.getActionCommand()=="Entrar"){
-         if((String)inputusername.getText()==""){
-               
-         }
-         String password=new String(inputpassword.getPassword());
-         if(UserApp.App.conect((String)inputusername.getText(),password)==true){
-            panel.setLayout(null);
-            Display.getinstance().setManager(Managerslist.DUAL);
-            App.getmainuser((String)inputusername.getText());
-            Display.getinstance().setManager(Managerslist.PERFIL);
-         }else{
-            System.out.println("no correcto");
-         }
-      }else if(e.getActionCommand()=="Crear cuenta"){
-         Display.getinstance().setManager(Managerslist.REGISTER);
-      }
-   }
+        display.clean(panel);
+        display.chgFrame(new Dimension(300, 600), false);
+    }
+    @Override
+    public void actionPerformed(ActionEvent e){
+        if(e.getActionCommand()=="Entrar"){
+            if((String)inputusername.getText()==""){
+
+            }
+            String password=new String(inputpassword.getPassword());
+            if(UserApp.App.conect((String)inputusername.getText(),password)==true){
+                panel.setLayout(null);
+                Display.getinstance().setManager(Managerslist.DUAL);
+                App.getmainuser((String)inputusername.getText());
+                Display.getinstance().setManager(Managerslist.PERFIL);
+            }else{
+                System.out.println("no correcto");
+                errorLabel.setVisible(true);
+            }
+        }else if(e.getActionCommand()=="Crear cuenta"){
+            Display.getinstance().setManager(Managerslist.REGISTER);
+        }
+    }
+    private void ponerTextFieldBonito(JTextField textField, String string){
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textField.getText().equals(string)) {
+                    textField.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (textField.getText().isEmpty()) {
+                    textField.setText(string);
+                }
+            }
+        });
+    }
 }
