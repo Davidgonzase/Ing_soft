@@ -11,7 +11,7 @@ public abstract class Manager implements ActionListener{
    public Manager(Display display){
       this.display=display;
       try {
-         panel.setBackground(new Color(85,86,83));
+         panel.setBackground(new Color(132,179,203));
           for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
