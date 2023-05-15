@@ -13,6 +13,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.NumberFormatter;
 
 import Display.Display;
@@ -31,6 +32,8 @@ public class Nftregistrarmanager extends Manager{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button) {
+            FileNameExtensionFilter imgFilter = new FileNameExtensionFilter("PNG", "png");
+            fc.setFileFilter(imgFilter);
             int returnVal = fc.showOpenDialog(Display.getinstance().getCP());
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
@@ -56,7 +59,6 @@ public class Nftregistrarmanager extends Manager{
 
         nombrenft=generateTextField(50,"Nombre del NFT");
         panel.add(nombrenft);
-
         JLabel valorLabel = new JLabel("Valor del NFT:");
         valorLabel.setBounds(129,150,100,30);
         panel.add(valorLabel);

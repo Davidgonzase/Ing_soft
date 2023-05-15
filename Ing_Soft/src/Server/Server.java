@@ -234,6 +234,43 @@ class Server{
                         System.err.println("Error "+e.getSQLState());
                         return "Error";
                     }
+                case 8:
+                    if(arrayList.size()!=2)return "null";
+                    query = "select NFTID, Name, Price, Image from NFT where User_UserID = "+arrayList.get(1)+";";
+                    try (Statement stmt = (Statement) con.createStatement()) {
+                        ResultSet rs = stmt.executeQuery(query);
+                        String pass ="";
+                        while (rs.next()) {
+                            pass=rs.getString("Name")+";"+rs.getString("Price")+";"+rs.getString("NFTID")+";";
+                            out.writeUTF(pass);
+                            Blob blob = (Blob) rs.getBlob("Image");
+                            byte[] bytes= blob.getBytes(1, (int) blob.length()); 
+                            String imageString = Base64.getEncoder().encodeToString(bytes);
+                            out.writeUTF(imageString);
+                        }
+                        return "null";
+                    } catch (SQLException e) {
+                        System.err.println("Error "+e.getSQLState());
+                        return "Error";
+                    }
+                case 9:
+                    if(arrayList.size()!=2)return "null";
+                    query = "select Name, NFTID, Description, Price, image from NFT where NFTID = "+arrayList.get(1)+";";
+                    try (Statement stmt = (Statement) con.createStatement()) {
+                        ResultSet rs = stmt.executeQuery(query);
+                        String pass ="";
+                        String imageString="";
+                        while (rs.next()) {
+                            pass=rs.getString("Name")+";"+rs.getString("NFTID")+";"+rs.getString("Description")+";"+rs.getString("Price")+";";
+                            Blob blob = (Blob) rs.getBlob("Image");
+                            byte[] bytes= blob.getBytes(1, (int) blob.length()); 
+                            imageString = Base64.getEncoder().encodeToString(bytes);
+                        }
+                        return pass+imageString+";";
+                    } catch (SQLException e) {
+                        System.err.println("Error "+e.getSQLState());
+                        return "Error";
+                    }
 
             }
         }catch (IOException e) {

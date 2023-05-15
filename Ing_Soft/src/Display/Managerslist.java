@@ -7,6 +7,7 @@ import Managers.Chatsmanager;
 import Managers.Dualsmanager;
 import Managers.Loginmanager;
 import Managers.Manager;
+import Managers.Nftperfilmaager;
 import Managers.Nftregistrarmanager;
 import Managers.Otroperfilmanager;
 import Managers.Perfilmanager;
@@ -14,7 +15,12 @@ import Managers.Registermanager;
 import UserApp.App;
 
 public enum Managerslist{
-    LOGIN(0),REGISTER(1),DUAL(2),PERFIL(3),CATALOGO(4),CHATS(5),BUSQUEDA(6),OTROPERFIL(7),REGISTRARNFT(8);
+    LOGIN(0),REGISTER(1),DUAL(2),PERFIL(3),CATALOGO(4),CHATS(5),
+    BUSQUEDA(6),OTROPERFIL(7),REGISTRARNFT(8),NFTPERFIL(9);
+    private static Managerslist lastmanager=null;
+    public static Managerslist getlastManagerslist(){
+        return lastmanager;
+    }
     private int number;
     private Managerslist(int number){
         this.number=number;
@@ -22,6 +28,7 @@ public enum Managerslist{
     private static Manager[] managers=new Manager[7];
     private static JPanel[] panels=new JPanel[3];
     public static void managerselect(Managerslist type,Display display){
+        if(type!=NFTPERFIL)lastmanager=type;
         if(type.number<3){
             Manager manager=null;
             if(managers[type.number]==null){
@@ -63,6 +70,8 @@ public enum Managerslist{
                 return new Otroperfilmanager(display,App.get_loadedUser());
             case 8:
                 return new Nftregistrarmanager(display);
+            case 9:
+                return new Nftperfilmaager(display,App.get_Nft());
             default:
                 return null;
         }

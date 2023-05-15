@@ -1,28 +1,21 @@
 package Managers;
 
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
-
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -124,6 +117,9 @@ public class Buscadormanager extends Manager{
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand()=="buscar"){
             paneles();
+        }else{
+            App.getNFT_profile(Integer.parseInt(e.getActionCommand()));
+            Display.getinstance().setManager(Managerslist.NFTPERFIL);
         }
     }
     private void paneles(){
@@ -185,7 +181,6 @@ public class Buscadormanager extends Manager{
                                 }else id=frase;
                             }else frase+=temp;
                         }
-                        ByteArrayInputStream inStreambj = new ByteArrayInputStream(imageBytes);
                         Image image;
                         try (ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes)) {
                             image = ImageIO.read(bis);
@@ -193,9 +188,25 @@ public class Buscadormanager extends Manager{
                             e.printStackTrace();
                             return;
                         }
-                        ImageIcon imageIcon = new ImageIcon(image);
+                        Image resizedImage = image.getScaledInstance(30, 30, Image.SCALE_DEFAULT);
+                        JButton button= new JButton(name);
+                        JLabel price= new JLabel(precio);
+                        JSplitPane pane1= new JSplitPane(1,button,price);
+                        ImageIcon imageIcon = new ImageIcon(resizedImage);
                         JLabel label = new JLabel(imageIcon);
-                        resultadosPanel.add(label);
+                        JSplitPane pane2= new JSplitPane(1,pane1,label);
+                        label.setSize(30, 30);
+                        price.setSize(170, 30);
+                        button.setSize(400, 30);
+                        pane1.setSize(630, 30);
+                        pane1.setEnabled(false);
+                        pane1.setDividerLocation(400);
+                        pane2.setEnabled(false);
+                        pane2.setDividerLocation(500);
+                        pane2.setBounds(0, posy, 630, 30);
+                        button.setActionCommand(id);
+                        button.addActionListener(this);
+                        resultadosPanel.add(pane2);
                     posy+=31;
                     }
                 }

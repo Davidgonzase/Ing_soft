@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import Display.Display;
+import UserApp.App;
 
 public class Chatsmanager extends Manager{
     private int labelCounter = 0;
@@ -50,7 +51,6 @@ public class Chatsmanager extends Manager{
         label.setBackground(Color.RED);
         label.setOpaque(true);
         panel.add(label);
-
         JPanel chatPanel = new JPanel();
         chatPanel.setSize(355,650);
         chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
