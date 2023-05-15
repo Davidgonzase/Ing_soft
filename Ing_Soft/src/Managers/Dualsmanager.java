@@ -2,11 +2,9 @@ package Managers;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import Display.Display;
 import Display.Managerslist;
@@ -16,6 +14,11 @@ public class Dualsmanager extends Manager{
     private JSplitPane pane;
     private JButton currentbutton;
     private JButton perfilButton,catalogoButton,chatsButton,busquedaButton,cerrarButton;
+    private boolean side=false;
+    private JButton location= new JButton();
+    private ImageIcon image = new ImageIcon("src\\img\\arrow.png");
+    private ImageIcon image1 = new ImageIcon("src\\img\\arrow1.png");
+    private Color colorpanel=new Color(207, 212, 227);
     public Dualsmanager(Display display){
         super(display);
      }
@@ -25,13 +28,13 @@ public class Dualsmanager extends Manager{
         panel.setLayout(null);
         JLabel decoracion = new JLabel();
         decoracion.setBounds(0,0,170,60);
-        decoracion.setBackground(Color.red);
+        decoracion.setBackground(color);
         decoracion.setOpaque(true);
         panel.add(decoracion);
 
         perfilButton= createButton(100,"Perfil");
         panel.add(perfilButton);
-        perfilButton.setBackground(Color.red);
+        perfilButton.setBackground(color);
         perfilButton.setFocusable(false);
         perfilButton.addActionListener(this);
         currentbutton=perfilButton;
@@ -58,16 +61,23 @@ public class Dualsmanager extends Manager{
 
         JLabel backdecoracion = new JLabel();
         backdecoracion.setBounds(0,0,170,720);
-        backdecoracion.setBackground(Color.white);
+        backdecoracion.setBackground(colorpanel);
         backdecoracion.setOpaque(true);
         panel.add(backdecoracion);
         pane=new JSplitPane(1, panel, currentpanel);
         display.clean(pane);
         pane.setDividerLocation(170);
-        busquedaButton.setBackground(Color.white);
-        catalogoButton.setBackground(Color.white);
-        chatsButton.setBackground(Color.white);
-        pane.setDividerSize(0);
+        busquedaButton.setBackground(colorpanel);
+        catalogoButton.setBackground(colorpanel);
+        chatsButton.setBackground(colorpanel);
+        pane.setDividerSize(2);
+        location.setBounds(0,330,25,40);
+        location.setIcon(image1);
+        location.setActionCommand("Side");
+        location.addActionListener(this);
+
+        pane.setEnabled(false);
+        
         display.chgFrame(new Dimension(890, 720), false);
     }
     private JButton createButton(int posy, String texto){
@@ -85,14 +95,24 @@ public class Dualsmanager extends Manager{
             chg(chatsButton, Managerslist.CHATS);
         }else if(e.getActionCommand()=="Busqueda"){
             chg(busquedaButton, Managerslist.BUSQUEDA);
+        }else if(e.getActionCommand()=="Side"){
+            if(side==false){
+                pane.setDividerLocation(0);
+                location.setIcon(image);
+                side=true;
+            }else{
+                pane.setDividerLocation(170);
+                location.setIcon(image1);
+                side=false;
+            }
         }
     }
 
     private void chg(JButton button,Managerslist manager){
         if(display.gManagerslist()!=manager){
-            currentbutton.setBackground(Color.white);
+            currentbutton.setBackground(colorpanel);
             currentbutton=button;
-            currentbutton.setBackground(Color.red);
+            currentbutton.setBackground(color);
             display.setManager(manager);
         }
     }
@@ -100,10 +120,12 @@ public class Dualsmanager extends Manager{
     public void clean(JComponent npanel){
         if(currentpanel==null){
             currentpanel=npanel;
+            currentpanel.add(location);
             pane.add(currentpanel);
         }else{
             pane.remove(currentpanel);
             currentpanel=npanel;
+            currentpanel.add(location);
             pane.add(currentpanel);
             display.reload();
         }

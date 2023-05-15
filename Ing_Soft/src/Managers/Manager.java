@@ -7,11 +7,12 @@ import Display.Display;
 
 public abstract class Manager implements ActionListener{
    public Display display;
+   protected Color color=new Color(139, 137, 196);
    protected JPanel panel= new JPanel(); 
    public Manager(Display display){
       this.display=display;
       try {
-         panel.setBackground(new Color(132,179,203));
+         panel.setBackground(new Color(85,86,83));
           for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());

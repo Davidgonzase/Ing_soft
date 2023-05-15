@@ -9,8 +9,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
+
+import javax.swing.JFrame;
 
 import com.mysql.jdbc.Blob;
+import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
 class Server{
@@ -18,7 +22,13 @@ class Server{
     private DataInputStream in;
     private DataOutputStream out;
     private  Connection con=null;
+    private JFrame frame;
+    private byte[] Byte=null;
     public Server(){
+        frame = new JFrame(); // GUI gui = new GUI() as well
+        // default value JFrame.HIDE_ON_CLOSE
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+        frame.setVisible(true);
         System.out.println("Starting Server...");
         setconnection("jdbc:mysql://localhost:3306/ingsoft","Ing_s", "Ing_s");
         if (con != null) {
@@ -26,12 +36,15 @@ class Server{
         }
         try {
             ServerSocket serverSocket = new ServerSocket(48816);
-            while(true){
+            Boolean on=true;
+            while(on){
                 currenSocket=serverSocket.accept();
                 in=new DataInputStream(currenSocket.getInputStream());
                 out=new DataOutputStream(currenSocket.getOutputStream());
                 out.writeUTF(request());
+                currenSocket.close();
             }
+            serverSocket.close();
         } catch (IOException exception) {
             System.err.println(exception.toString());
             exception.printStackTrace();
@@ -39,11 +52,10 @@ class Server{
     }
     private String request(){
         String query;
-        ArrayList<String> arrayList=new ArrayList<String>();
         try {
             query=in.readUTF();
             int caso=0;
-            parse(arrayList, query);
+            ArrayList<String> arrayList=parse(query);
             if(arrayList.size()>0){
                 String num=arrayList.get(0);
                 caso=Integer.parseInt(num);
@@ -124,6 +136,105 @@ class Server{
                         System.err.println("Error "+e.getSQLState());
                         return "Error";
                     }
+                case 3:
+                    if(arrayList.size()!=2)return "Error de sentencia";
+                    query = "select ProfileID, Username from profile where Username like '%"+arrayList.get(1)+"%';";
+                    try (Statement stmt = (Statement) con.createStatement()) {
+                        ResultSet rs = stmt.executeQuery(query);
+                        String pass ="";
+                        while (rs.next()) {
+                            pass+=rs.getString("ProfileID")+","+rs.getString("Username")+";";
+                        }
+                        return pass;
+                    } catch (SQLException e) {
+                        System.err.println("Error "+e.getSQLState());
+                        return "Error";
+                    }
+                case 4:
+                    if(arrayList.size()!=2)return "Error de sentencia";
+                    query = "select name,price,image from nft where Name like %"+arrayList.get(1)+"%';";
+                    try (Statement stmt = (Statement) con.createStatement()) {
+                        ResultSet rs = stmt.executeQuery(query);
+                        String pass ="";
+                        while (rs.next()) {
+                            pass=rs.getString("name")+","+rs.getString("price")+",";
+                            Blob blob = (Blob) rs.getBlob("Image");
+                            if(blob!=null){
+                                byte[] bytes = blob.getBytes(1, (int)blob.length());
+                                for(int i=0;i<bytes.length;i++){
+                                    pass+=bytes[i];
+                                }   
+                            }else{
+                                pass+="null";
+                            }
+                            pass+=";";
+                        }
+                        return pass;
+                    } catch (SQLException e) {
+                        System.err.println("Error "+e.getSQLState());
+                        return "Error";
+                    }
+                case 5:
+                    if(arrayList.size()!=2)return "Error de sentencia";
+                        query = "select UserID, Email,Username, Description, Image from user join profile on UserID=ProfileID where UserID='"+arrayList.get(1)+"';";
+                        try (Statement stmt = (Statement) con.createStatement()) {
+                            ResultSet rs = stmt.executeQuery(query);
+                            String pass ="";
+                            while (rs.next()) {
+                                pass=rs.getString("UserId")+";"+rs.getString("Email")+";"+rs.getString("Username")+";"+rs.getString("Description")+";";
+                                Blob blob = (Blob) rs.getBlob("Image");
+                                if(blob!=null){
+                                    byte[] bytes = blob.getBytes(1, (int) blob.length());
+                                    String blobsString=new String(bytes);
+                                    pass+=blobsString+";";
+                                }else{
+                                    pass+="null";
+                                }
+                            }
+                            
+                            return pass;
+                        } catch (SQLException e) {
+                            System.err.println("Error "+e.getSQLState());
+                            return "Error";
+                        }
+                case 6:
+                    if(arrayList.size()!=4)return "Error de sentencia";
+                    query = "INSERT INTO `NFT` (Name, Description, User_UserID, Image) VALUES (?, ?, ?, ?)";
+                    try {
+                        PreparedStatement stmt = (PreparedStatement) con.prepareStatement(query);
+                        stmt.setString(1, arrayList.get(1));
+                        stmt.setString(2, arrayList.get(2));
+                        stmt.setString(3, arrayList.get(3));
+                        stmt.setBytes(4, Byte);
+                    
+                        stmt.execute();
+                        Byte = null;
+                    
+                        return "Afirmativo";
+                    } catch (SQLException e) {
+                        System.err.println("Error: " + e.getSQLState());
+                        return "Error";
+                    }
+                case 7:
+                    if(arrayList.size()!=2)return "null";
+                    query = "select NFTID, Name, Price, Image from NFT where Name like '%"+arrayList.get(1)+"%';";
+                    try (Statement stmt = (Statement) con.createStatement()) {
+                        ResultSet rs = stmt.executeQuery(query);
+                        String pass ="";
+                        while (rs.next()) {
+                            pass=rs.getString("Name")+";"+rs.getString("Price")+";"+rs.getString("NFTID")+";";
+                            out.writeUTF(pass);
+                            Blob blob = (Blob) rs.getBlob("Image");
+                            byte[] bytes= blob.getBytes(1, (int) blob.length()); 
+                            String imageString = Base64.getEncoder().encodeToString(bytes);
+                            out.writeUTF(imageString);
+                        }
+                        return "null";
+                    } catch (SQLException e) {
+                        System.err.println("Error "+e.getSQLState());
+                        return "Error";
+                    }
+
             }
         }catch (IOException e) {
             e.printStackTrace();
@@ -140,22 +251,48 @@ class Server{
             exception.printStackTrace();
         }
     }
-    private void parse(ArrayList<String> arrayList,String stc){
+    private ArrayList<String> parse(String stc){
+        ArrayList<String> arrayList=new ArrayList<String>();
         String frase="";
+        int last=0;
         for(int i=0;i<stc.length();i++){
             char temp=stc.charAt(i);
             if(temp==';'){
                 arrayList.add(frase);
                 frase="";
+                last=i+1;
+                break;
             }else frase+=temp;
         }
-    }
-    private boolean isNumeric(String strNum) {
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
+        int num=0;
+        if(arrayList.size()>0){
+            num=Integer.parseInt(arrayList.get(0));
         }
-        return true;
+        if(num==6){
+            int cont=0;
+            for(int i=last;i<stc.length();i++){
+                char temp=stc.charAt(i);
+                if(temp==';'&&cont<=2){
+                    arrayList.add(frase);
+                    frase="";
+                    cont++;
+                }else if(cont==3){
+                    Byte= Base64.getDecoder().decode(stc.substring(i));
+                    return arrayList;
+                }else{
+                    frase+=temp;
+                }
+            }
+            return null;
+        }else{
+            for(int i=last;i<stc.length();i++){
+                char temp=stc.charAt(i);
+                if(temp==';'){
+                    arrayList.add(frase);
+                    frase="";
+                }else frase+=temp;
+            }
+            return arrayList;
+        }
     }
 }

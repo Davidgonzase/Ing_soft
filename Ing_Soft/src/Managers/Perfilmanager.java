@@ -50,8 +50,8 @@ public class Perfilmanager extends Manager{
     public JButton createButton(int posy, String texto){
         JButton jButton= new JButton(texto);
         jButton.setBounds(400,posy,170,60);
-        jButton.setBackground(Color.RED);
-        jButton.setForeground(Color.CYAN);
+        jButton.setBackground(color);
+        jButton.setForeground(Color.black);
         return jButton;
     }
 }

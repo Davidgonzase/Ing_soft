@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import Display.Display;
-import UserApp.User;
+import Display.Managerslist;
 
 public class Catalogomanager extends Manager{
     public Catalogomanager(Display display) {
@@ -18,36 +18,39 @@ public class Catalogomanager extends Manager{
     
     @Override
     public void initialize() {
-        panel.setSize(720, 720);
+        panel.setBounds(170,0,720,720);
         panel.setLayout(null);
+
         JPanel resultadosPanel = new JPanel();
-        resultadosPanel.setSize(535,595);
+        resultadosPanel.setSize(600,595);
         resultadosPanel.setLayout(null);
-        resultadosPanel.setBackground(new Color(196,196,196));
+        resultadosPanel.setBackground(Color.white);
 
         JScrollPane scrollPane = new JScrollPane(resultadosPanel);
-        scrollPane.setBounds(171,0,535,595);
+        scrollPane.setBounds(50,0,600,595);
         panel.add(scrollPane);
 
-        JButton añadir = createButton(180,"Añadir");
+        JButton añadir = createButton(100,"Añadir");
+        añadir.addActionListener(this);
         panel.add(añadir);
 
-        JButton eliminar = createButton(500,"Eliminar");
+        JButton eliminar = createButton(420,"Eliminar");
         panel.add(eliminar);
     }
-    
     public JButton createButton(int posx, String texto){
         JButton jButton= new JButton(texto);
         jButton.setBounds(posx,600,170,60);
         jButton.setFont(new Font("Arial", Font.PLAIN, 30));
-        jButton.setBackground(Color.RED);
-        jButton.setForeground(Color.white);
+        jButton.setBackground(color);
+        jButton.setForeground(Color.black);
         return jButton;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
+        if(e.getActionCommand()=="Añadir"){
+            Display.getinstance().setManager(Managerslist.REGISTRARNFT);
+        }
         
     }
     
