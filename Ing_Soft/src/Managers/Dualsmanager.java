@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import Display.Display;
 import Display.Managerslist;
+import UserApp.App;
 
 public class Dualsmanager extends Manager{
     private JComponent currentpanel=null;
@@ -105,6 +106,8 @@ public class Dualsmanager extends Manager{
                 location.setIcon(image1);
                 side=false;
             }
+        }else if(e.getActionCommand()=="Cerrar sesión"){
+            display.dispose();
         }
     }
 

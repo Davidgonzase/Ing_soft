@@ -132,6 +132,7 @@ public class Loginmanager extends Manager{
          if(UserApp.App.conect((String)inputusername.getText(),password)==true){
             panel.setLayout(null);
             Display.getinstance().setManager(Managerslist.DUAL);
+            display.chgFrame(new Dimension(890, 720), false);
             App.getmainuser((String)inputusername.getText());
             Display.getinstance().setManager(Managerslist.PERFIL);
          }else{

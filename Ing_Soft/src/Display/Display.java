@@ -53,4 +53,8 @@ public class Display{
     public Managerslist gManagerslist(){
         return currentManager;
     }
+    public void dispose(){
+        frame.setVisible(false);
+        this.dispose();
+    }
 }

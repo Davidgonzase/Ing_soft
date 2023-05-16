@@ -24,7 +24,9 @@ public class App {
     public static Nft get_Nft(){
         return nft;
     }
-
+    public static void start(){
+        Display.getinstance();
+    }
     public static void main(String[] args) throws Exception {
         Display.getinstance();
         
@@ -70,6 +72,7 @@ public class App {
         }
     }
     public static void getmainuser(String correo){
+        user=null;
         String st="2;"+correo+";";
         try {
             if(!request())return;
@@ -203,6 +206,47 @@ public class App {
             System.out.println();
             e.printStackTrace();
             user= null;
+        }
+    }
+
+    public static String getListaChats(int id){
+        String st="10;"+id+";";
+        try {
+            if(!request())return "";
+            out.writeUTF(st);
+            st=in.readUTF();
+            return st;
+        } catch (IOException e) {
+            System.out.println();
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static String generarStringmensajes(int idChat){
+        String st="11;"+idChat+";";
+        try {
+            if(!request())return "";
+            out.writeUTF(st);
+            st=in.readUTF();
+            return st;
+        } catch (IOException e) {
+            System.out.println();
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String introducirmensajes(int idChat,String msg){
+        String st="12;"+msg+";"+idChat+";";
+        try {
+            if(!request())return "";
+            out.writeUTF(st);
+            st=in.readUTF();
+            return st;
+        } catch (IOException e) {
+            System.out.println();
+            e.printStackTrace();
+            return null;
         }
     }
 

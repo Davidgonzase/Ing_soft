@@ -271,7 +271,44 @@ class Server{
                         System.err.println("Error "+e.getSQLState());
                         return "Error";
                     }
-
+                case 10:
+                    if(arrayList.size()!=2)return "null";
+                    try (Statement stmt = (Statement) con.createStatement()) {
+                        query="SELECT c.IdChat, u.Name FROM chat AS c JOIN User AS u WHERE c.User_UserID1 = "+arrayList.get(1)+" or c.User_UserID = "+arrayList.get(1)+";";
+                        String res="";
+                        ResultSet rs = stmt.executeQuery(query);
+                        while (rs.next()) {
+                            res+=rs.getString("IdChat")+";"+rs.getString("Name")+";";
+                        }
+                        return res;
+                    } catch (SQLException e) {
+                        System.err.println("Error "+e.getSQLState());
+                        return "Ha ocurrido un error";
+                    }
+                case 11:
+                    if(arrayList.size()!=2)return "null";
+                    query="Select Mensaje from Msg where Chat_idChat = "+arrayList.get(1)+";";
+                    try (Statement stmt = (Statement) con.createStatement()) {
+                        String res="";
+                        ResultSet rs = stmt.executeQuery(query);
+                        while (rs.next()) {
+                            res+=rs.getString("Mensaje")+";";
+                        }
+                        return res;
+                    } catch (SQLException e) {
+                        System.err.println("Error "+e.getSQLState());
+                        return "Ha ocurrido un error";
+                    }
+                case 12:
+                    if(arrayList.size()!=3)return "null";
+                    query="insert  into msg (Mensaje, Chat_IdChat) values('"+arrayList.get(1)+"','"+arrayList.get(2)+"')';";
+                    try (Statement stmt = (Statement) con.createStatement()) {
+                        stmt.execute(query);
+                        return "Afirmativo";
+                    } catch (SQLException e) {
+                        System.err.println("Error "+e.getSQLState());
+                        return "Ha ocurrido un error";
+                    }
             }
         }catch (IOException e) {
             e.printStackTrace();
