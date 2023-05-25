@@ -33,7 +33,7 @@ public class App {
     }
     private static boolean request(){
         try {
-            socket=new Socket("192.168.104.123",48816);
+            socket=new Socket("localhost",48816);
             if(socket.isConnected()){
                 in=new DataInputStream (socket.getInputStream());
                 out=new DataOutputStream(socket.getOutputStream());

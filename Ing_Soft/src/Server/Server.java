@@ -277,7 +277,7 @@ class Server{
                         query="SELECT c.IdChat, u.Name FROM chat AS c JOIN User AS u WHERE c.User_UserID1 = "+arrayList.get(1)+" or c.User_UserID = "+arrayList.get(1)+";";
                         String res="";
                         ResultSet rs = stmt.executeQuery(query);
-                        while (rs.next()) {
+                        while (rs.next()) { 
                             res+=rs.getString("IdChat")+";"+rs.getString("Name")+";";
                         }
                         return res;
